@@ -26,7 +26,7 @@ namespace crpropa {
       int ntot=100;
     
       for (int i = 0; i < ntot; i++) {
-	if (i%100==0) cout << " zi : " << z1 << " E : " << E << " " << i << " / " << ntot << endl; 
+	if (i%1==0) cout << " zi : " << z1 << " E : " << E << " " << i << " / " << ntot << endl; 
 	if (E>1e23) continue;     
 	c.current.setEnergy(E);
 	epp1.process(c, epp1.GetEthr());

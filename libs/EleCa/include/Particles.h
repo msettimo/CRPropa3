@@ -56,6 +56,7 @@ namespace crpropa {
     if (abs(ftype)==11) {
       fmass = ElectronMass;
       fbeta = (double) sqrt(1 - fmass*fmass/(fE0ph*fE0ph));
+      
     }
     };
     void SetB(double B) {fB=B;}

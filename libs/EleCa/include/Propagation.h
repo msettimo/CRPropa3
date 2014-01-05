@@ -1,7 +1,6 @@
 using namespace crpropa;
 void PhotonEleCa::Propagate(Particle &curr_particle, vector<Particle> &ParticleAtMatrix, vector<Particle> &ParticleAtGround) {
  
-  cout << " propagating " << endl;  
   double Ethr = fEthr;
   double theta_deflBF=0.0;
   double BNorm =curr_particle.GetB();
@@ -28,7 +27,7 @@ void PhotonEleCa::Propagate(Particle &curr_particle, vector<Particle> &ParticleA
 
   double R = Uniform(0.0,1.0);
   double R2 = Uniform(0.0,1.0);
-  bool fast = 0;
+  bool fast = 1;
 
   Process proc;
   proc.SetIncidentParticle(curr_particle);
@@ -44,7 +43,7 @@ void PhotonEleCa::Propagate(Particle &curr_particle, vector<Particle> &ParticleA
   double realpath=0;
   
   double min_dist_last = min_dist;
-  //  debug = 1;
+  //   debug = 1;
   if (debug) cout << "starting propagation... min_dist_last: " << min_dist_last << endl; 
   
   while (!interacted) {
@@ -107,13 +106,13 @@ void PhotonEleCa::Propagate(Particle &curr_particle, vector<Particle> &ParticleA
       proc.SetIncidentParticle(curr_particle);
       proc.SetCMEnergy();
       proc.SetLimits();
-     
+      //      vector<double> EtargetAll=GetEtarget(proc,curr_particle);
       min_dist = ExtractMinDist(proc, curr_particle.GetType(), R, R2,EtargetAll);
    }//end while
 
 
   if (interacted==1) {
-      cerr << "******** producing secondary particles according to " << proc.GetName() << " process *********** " <<endl;
+    if (debug)  cerr << "******** producing secondary particles according to " << proc.GetName() << " process *********** " <<endl;
 
     if (proc.GetName()=="PP") {
 

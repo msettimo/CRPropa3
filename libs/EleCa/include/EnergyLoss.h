@@ -198,6 +198,8 @@ double ExtractPPSecondariesEnergy(Particle pi, Particle pt) {
     int cnt = 0;
     double NormFactor = 0;
     
+   
+
     for (double Ee=f*0.5*(1-beta)*E0; Ee<0.5*(1+beta)*E0; Ee*=f){
         MC_Sampling_Hist[cnt][0] = Ee;
         MC_Sampling_Hist[cnt][1] = dSigmadE_PP(Ee, E0, eps, theta);
@@ -213,23 +215,25 @@ double ExtractPPSecondariesEnergy(Particle pi, Particle pt) {
     }
     
     NormFactor = (double)1./(double)NormFactor;
-
+    
     for(int i=0; i<cnt; i++) MC_Sampling_Hist[i][2] *= NormFactor;
     
     double rnd; 
     double Ee = 0;
-
+    int k=0;
    while (failed) { 
+     k++;
 
     rnd = Uniform(0,1);
     Ee = 0;
-
     for(int i=0; i<cnt-1; i++){
         if( MC_Sampling_Hist[i][2]<= rnd <= MC_Sampling_Hist[i+1][2] ){ 
             Ee = MC_Sampling_Hist[i][0];
             failed=0;
             break;
         } 
+     	if (failed) 
+	  cout << "cnt: " << cnt << " failed " << k << endl;
      }
 
     } //end while
@@ -251,10 +255,12 @@ double ExtractPPSecondariesEnergy(Process proc) {
     double s = proc.GetCMEnergy();
     double eps = proc.GetTargetParticle().GetEnergy();
     double theta = cPI;
-    double beta = sqrt(1-4*ElectronMass*ElectronMass/s);
+
+    double beta = sqrt(1.-4.0*ElectronMass*ElectronMass/s);
     double s2 = ElectronMass*ElectronMass + 2*eps*E0*(1-(beta)*cos(theta));
+
     bool failed=1;
-    // reInitialization to zero..
+  
     for(int i=0; i<MC_SAMPLING; i++){
         for(int j=0; j<3; j++) MC_Sampling_Hist[i][j] = 0.;
     }
@@ -282,17 +288,30 @@ double ExtractPPSecondariesEnergy(Process proc) {
     
     double rnd; 
     double Ee = 0;
+    int k=0;
 
    while (failed) { 
-    rnd = Uniform(0,1);
+    rnd = Uniform(0.,1.0);
     Ee = 0;
+    k++;
+    double min=1e6;
+    double max=-1;
 
     for(int i=0; i<cnt-1; i++){
+
+	    if (MC_Sampling_Hist[i][2]<min) min=MC_Sampling_Hist[i][2];
+	    if (MC_Sampling_Hist[i+1][2]>max) max=MC_Sampling_Hist[i+1][2];
+
            if( MC_Sampling_Hist[i][2]<= rnd <= MC_Sampling_Hist[i+1][2] ){ 
             Ee = MC_Sampling_Hist[i][0];
             failed=0;
             break;
          }
+    }
+    if (failed) {
+	  cout << "failed in extractPP " << Ee << " " << beta  << " * s: " <<  s << " E: " <<  E0 << " eps : " << eps << " me: " << ElectronMass*ElectronMass/E0 << "  ) " << " cnt : " << cnt << endl;
+    cout << " Limits  " << proc.GetMin() << endl;
+    if (cnt==0)   exit(0);
     }
 
   } //end while
@@ -312,7 +331,7 @@ double ExtractICSSecondariesEnergy(Particle pi, Particle pt) {
     */
   if (abs(pi.GetType())!=11) {
     cerr << "something wrong in type ExtractICSEnergy " << endl;
-    return 0; 
+    return 0.; 
   }
 
   double Ee = pi.GetEnergy();

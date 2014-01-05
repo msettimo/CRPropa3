@@ -59,8 +59,8 @@ namespace crpropa {
     
     double GetCMEnergy() {return fCMEnergy;}
     
-    void SetIncidentParticle(Particle& p1) {fPi = p1; SetLimits();}
-    void SetTargetParticle(Particle& p1) {fPt = p1;}
+    void SetIncidentParticle(Particle& p1) {fPi = p1; SetLimits(); }
+    void SetTargetParticle(Particle& p1) {fPt = p1;  SetLimits(); }
     
     Particle GetIncidentParticle() {return fPi;}
     Particle GetTargetParticle() {return fPt;}
